@@ -101,7 +101,7 @@ pipeline{
                 withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
     
  
-                    sh "docker login -u $(docker_hub_login) -p ${docker_hub_pass}"
+                    sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
                 }
                 
                 sh "docker push andriy75/webapp "
