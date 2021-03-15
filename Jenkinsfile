@@ -61,7 +61,7 @@ pipeline{
         state: present
     - name: Start the container
       docker_container:
-        name: run app
+        name: run-app
         image: "andriyandriy75/webapp"
         state: started
         published_ports:
