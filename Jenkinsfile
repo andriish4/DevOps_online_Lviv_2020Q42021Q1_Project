@@ -27,12 +27,7 @@ pipeline{
          
         }
     
-       // stage ('Docker build image') {
-            
-        
-        
-      //  }  
-        
+    
         
         stage('Ansible tasks'){
             steps{         
@@ -61,7 +56,7 @@ pipeline{
         state: present
     - name: Start the container
       docker_container:
-        name: run-app
+        name: web-app
         image: "andriyandriy75/webapp"
         state: started
         published_ports:
@@ -81,17 +76,6 @@ pipeline{
                     //sh "rm inventory -f"
                 }
         }
-        
-        
-        
-        
-        
-        
-        //stage('Docker Deploy'){
-        //    steps{
-        //      ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-        //    }
-       // }
        
  stage('Docker Build'){
             steps{
@@ -106,9 +90,7 @@ pipeline{
         stage('DockerHub Push'){
            steps{
                 withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
-    
- 
-                    sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
+                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
                 }
                 
                 sh "docker push andriyandriy75/webapp "
@@ -127,6 +109,10 @@ pipeline{
                 
                 sh 'echo'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
+                //Cleanup
+                sh "rm playbook.yml -f"
+                sh "rm inventory -f"
+
                   }
                             
                       
