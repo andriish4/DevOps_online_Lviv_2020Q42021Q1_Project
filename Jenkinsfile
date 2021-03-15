@@ -59,6 +59,13 @@ pipeline{
       pip:
         name: docker-py
         state: present
+     - name: Start the container
+      docker_container:
+        name: run app
+        image: "andriyandriy75/webapp"
+        state: started
+        published_ports:
+          - 0.0.0.0:8080:9090   
    
 """
     // Create inventory
@@ -70,8 +77,8 @@ pipeline{
    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
                       
                     //Cleanup
-                    sh "rm playbook.yml -f"
-                    sh "rm inventory -f"
+                    //sh "rm playbook.yml -f"
+                    //sh "rm inventory -f"
                 }
         }
         
@@ -108,11 +115,11 @@ pipeline{
            }
         }
         
-   //     stage('Docker Deploy'){
-  //          steps{
-    //          ansiblePlaybook credentialsId: 'dev-server', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=${DOCKER_TAG}", installation: 'ansible', inventory: 'dev.inv', playbook: 'deploy-docker.yml'
-     //       }
-     //   }   
+        stage('Docker Deploy'){
+            steps{
+              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+            }
+        }   
         
         
         stage('Artifacts') {
