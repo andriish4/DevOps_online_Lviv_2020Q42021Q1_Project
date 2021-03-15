@@ -96,15 +96,17 @@ pipeline{
             }
         }
         
-    //    stage('DockerHub Push'){
-   //        steps{
-     //           withCredentials([string(credentialsId: 'docker-hub', variable: 'dockerHubPwd')]) {
-      //              sh "docker login -u kammana -p ${dockerHubPwd}"
-       //         }
+        stage('DockerHub Push'){
+           steps{
+                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
+    
+ 
+                    sh "docker login -u $(docker_hub_login) -p ${docker_hub_pass}"
+                }
                 
-      //          sh "docker push kammana/hariapp:${DOCKER_TAG} "
-      //      }
-     //   }
+                sh "docker push andriy75/webapp "
+           }
+        }
         
    //     stage('Docker Deploy'){
   //          steps{
