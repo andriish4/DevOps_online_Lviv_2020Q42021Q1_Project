@@ -34,9 +34,9 @@ pipeline{
       //  }  
         
         
-        stage('Ansible tasks - ') {
+        stage('Ansible tasks - '){
                    
-          steps {         
+          steps{         
            
       // Create playbook
      writeFile encoding: 'utf8', file: "playbook.yml", text: """---
