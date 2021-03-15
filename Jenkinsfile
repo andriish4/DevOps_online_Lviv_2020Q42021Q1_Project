@@ -26,14 +26,20 @@ pipeline{
             }
          
         }
-        stage('Sync files') {
+    
+        stage ('Docker build image') {
+            
+        
+        
+        }  
+        
+        
+        stage('Ansible tasks - ') {
                    
           steps {         
-                   
-            
-            // writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
-                    // Create playbook
-                    writeFile encoding: 'utf8', file: "playbook.yml", text: """---
+           
+      // Create playbook
+     writeFile encoding: 'utf8', file: "playbook.yml", text: """---
 - hosts: all
   become: True
   tasks:
@@ -56,21 +62,18 @@ pipeline{
         state: present
     - name: Start the container
       docker_container:
-        name: hariapp
+        name: webapp start
         image: "andriyandriy75/webapp"
         state: started
         published_ports:
           - 0.0.0.0:8080:8080
 """
-                    // Create inventory
-                    writeFile encoding: 'utf8', file: "inventory", text: """
+    // Create inventory
+   writeFile encoding: 'utf8', file: "inventory", text: """
 [dev]
 172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes' # Switch to deploy user and forward keys for remote access
 """
-
-                   // ansiColor('xterm') {
-                        // We need ssh-agent for remote access
-                       
+                
                             ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
                        
                     }
