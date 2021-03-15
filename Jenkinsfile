@@ -59,7 +59,7 @@ pipeline{
       pip:
         name: docker-py
         state: present
-     - name: Start the container
+    - name: Start the container
       docker_container:
         name: run app
         image: "andriyandriy75/webapp"
