@@ -34,9 +34,8 @@ pipeline{
       //  }  
         
         
-        stage('Ansible tasks - '){
-                   
-          steps{         
+        stage('Ansible tasks'){
+            steps{         
            
       // Create playbook
      writeFile encoding: 'utf8', file: "playbook.yml", text: """---
@@ -68,13 +67,12 @@ pipeline{
 172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes' # Switch to deploy user and forward keys for remote access
 """
                 
-                            ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
-                       
-                    }
+   ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
+                      
                     //Cleanup
                     sh "rm playbook.yml -f"
                     sh "rm inventory -f"
-            
+                }
         }
         
         
