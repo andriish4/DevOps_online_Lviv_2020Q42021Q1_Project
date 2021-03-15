@@ -27,11 +27,11 @@ pipeline{
          
         }
     
-        stage ('Docker build image') {
+       // stage ('Docker build image') {
             
         
         
-        }  
+      //  }  
         
         
         stage('Ansible tasks - ') {
@@ -60,13 +60,7 @@ pipeline{
       pip:
         name: docker-py
         state: present
-    - name: Start the container
-      docker_container:
-        name: webapp start
-        image: "andriyandriy75/webapp"
-        state: started
-        published_ports:
-          - 0.0.0.0:8080:8080
+   
 """
     // Create inventory
    writeFile encoding: 'utf8', file: "inventory", text: """
@@ -94,6 +88,33 @@ pipeline{
         //    }
        // }
        
+ stage('Docker Build'){
+            steps{
+                writeFile encoding: 'utf8', file: "Dockerfile", text: """
+                FROM tomcat:8
+                COPY target/*.jar /usr/local/tomcat/webapps/webapp.jar
+""" 
+              sh "docker build . -t andriyandriy75/webapp"
+            }
+        }
+        
+    //    stage('DockerHub Push'){
+   //        steps{
+     //           withCredentials([string(credentialsId: 'docker-hub', variable: 'dockerHubPwd')]) {
+      //              sh "docker login -u kammana -p ${dockerHubPwd}"
+       //         }
+                
+      //          sh "docker push kammana/hariapp:${DOCKER_TAG} "
+      //      }
+     //   }
+        
+   //     stage('Docker Deploy'){
+  //          steps{
+    //          ansiblePlaybook credentialsId: 'dev-server', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=${DOCKER_TAG}", installation: 'ansible', inventory: 'dev.inv', playbook: 'deploy-docker.yml'
+     //       }
+     //   }   
+        
+        
         stage('Artifacts') {
             steps {
                 
