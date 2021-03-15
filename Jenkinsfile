@@ -104,7 +104,7 @@ pipeline{
                     sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
                 }
                 
-                sh "docker push andriy75/webapp "
+                sh "docker push andriyandriy75/webapp "
            }
         }
         
