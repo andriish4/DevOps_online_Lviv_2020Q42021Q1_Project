@@ -25,7 +25,26 @@ pipeline{
   //          }
          
   //      }
-       
+        stage('Docker Build'){
+            steps{
+                writeFile encoding: 'utf8', file: "Dockerfile", text: """
+                FROM anapsix/alpine-java
+                COPY target/*.jar /home/webapp.jar
+                CMD ["java","-jar","/home/webapp.jar"]
+""" 
+              sh "docker build . -t andriyandriy75/webapp:$BUILD_ID"
+            }
+        }
+        
+        stage('DockerHub Push'){
+           steps{
+                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
+                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
+                }
+                
+                sh "docker push andriyandriy75/webapp:$BUILD_ID"
+           }
+        }
         
         stage('Ansible tasks'){
             steps{         
@@ -70,29 +89,7 @@ pipeline{
    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
                   }
         }
-       
- stage('Docker Build'){
-            steps{
-                writeFile encoding: 'utf8', file: "Dockerfile", text: """
-                FROM anapsix/alpine-java
-                COPY target/*.jar /home/webapp.jar
-                CMD ["java","-jar","/home/webapp.jar"]
-""" 
-              sh "docker build . -t andriyandriy75/webapp:$BUILD_ID"
-            }
-        }
-        
-        stage('DockerHub Push'){
-           steps{
-                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
-                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
-                }
-                
-                sh "docker push andriyandriy75/webapp:$BUILD_ID"
-           }
-        }
-        
-        stage('Docker Deploy'){
+       stage('Docker Deploy'){
             steps{
               ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
             }
