@@ -19,14 +19,13 @@ pipeline{
          
         }
         
-         stage('Test'){
-            steps{
-               sh "mvn test"
-            }
-             
-         
-        }
-  //      stage('Copy artifacts'){
+   //      stage('Test'){
+   //         steps{
+   //            sh "mvn test"
+   //         }
+   //       }
+  
+    //      stage('Copy artifacts'){
   //          steps{
                 
   //             sshPublisher(publishers: [sshPublisherDesc(configName: 'web1', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/ec2-user/dockerd', remoteDirectorySDF: false, removePrefix: 'target', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
