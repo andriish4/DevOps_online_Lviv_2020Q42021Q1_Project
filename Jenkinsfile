@@ -60,7 +60,7 @@ pipeline{
         image: "andriyandriy75/webapp"
         state: started
         published_ports:
-          - 0.0.0.0:8080:8080 
+          - 0.0.0.0:9995:8080 
    
 """
     // Create inventory
