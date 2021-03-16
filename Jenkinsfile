@@ -75,38 +75,37 @@ pipeline{
             steps{
                 writeFile encoding: 'utf8', file: "Dockerfile", text: """
                 FROM anapsix/alpine-java
-                MAINTAINER myNAME 
                 COPY target/*.jar /home/webapp.jar
                 CMD ["java","-jar","/home/webapp.jar"]
 """ 
-              sh "docker build . -t andriyandriy75/webapp"
+              sh "docker build . -t andriyandriy75/webapp:$BUILD_ID"
             }
         }
         
-        stage('DockerHub Push'){
-           steps{
-                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
-                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
-                }
+//        stage('DockerHub Push'){
+//           steps{
+//                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
+//                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
+//                }
                 
-                sh "docker push andriyandriy75/webapp "
-           }
-        }
+ //               sh "docker push andriyandriy75/webapp "
+//           }
+//        }
         
-        stage('Docker Deploy'){
-            steps{
-              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-            }
-        }   
+//        stage('Docker Deploy'){
+//            steps{
+//              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+//            }
+//        }   
               
-        stage('Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
+ //       stage('Artifacts') {
+ //           steps {
+ //               archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
                 //Cleanup
-                sh "rm playbook.yml -f"
-                sh "rm inventory -f"
+ //               sh "rm playbook.yml -f"
+ //               sh "rm inventory -f"
 
-                  }
+  //                }
                             
                       
         
