@@ -80,8 +80,10 @@ pipeline{
  stage('Docker Build'){
             steps{
                 writeFile encoding: 'utf8', file: "Dockerfile", text: """
-                FROM tomcat:8
-                COPY target/*.jar /usr/local/tomcat/webapps/webapp.jar
+                FROM anapsix/alpine-java
+                MAINTAINER myNAME 
+                COPY target/*.jar /home/webapp.jar
+                CMD ["java","-jar","/home/webapp.jar"]
 """ 
               sh "docker build . -t andriyandriy75/webapp"
             }
