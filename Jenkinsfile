@@ -55,7 +55,7 @@ pipeline{
     - name: Start the container
       docker_container:
         name: web-app
-        image: "andriyandriy75/webapp"
+        image: "andriyandriy75/webapp:$BUILD_ID"
         state: started
         published_ports:
           - 0.0.0.0:9995:8080 
@@ -82,21 +82,21 @@ pipeline{
             }
         }
         
-//        stage('DockerHub Push'){
-//           steps{
-//                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
-//                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
-//                }
+        stage('DockerHub Push'){
+           steps{
+                withCredentials([usernamePassword(credentialsId: 'docker_hub', passwordVariable: 'docker_hub_pass', usernameVariable: 'docker_hub_login')]) {
+                  sh "docker login -u ${docker_hub_login} -p ${docker_hub_pass}"
+                }
                 
- //               sh "docker push andriyandriy75/webapp "
-//           }
-//        }
+                sh "docker push andriyandriy75/webapp:$BUILD_ID"
+           }
+        }
         
-//        stage('Docker Deploy'){
-//            steps{
-//              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-//            }
-//        }   
+        stage('Docker Deploy'){
+            steps{
+              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+            }
+        }   
               
  //       stage('Artifacts') {
  //           steps {
