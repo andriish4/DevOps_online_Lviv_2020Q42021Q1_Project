@@ -14,20 +14,18 @@ pipeline{
         
         stage('Build'){
             steps{
-                
-                sh "mvn -B -DskipTests clean package"
+               sh "mvn -B -DskipTests clean install"
             }
          
         }
-        stage('Copy artifacts'){
-            steps{
+  //      stage('Copy artifacts'){
+  //          steps{
                 
-               sshPublisher(publishers: [sshPublisherDesc(configName: 'web1', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/ec2-user/dockerd', remoteDirectorySDF: false, removePrefix: 'target', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-            }
+  //             sshPublisher(publishers: [sshPublisherDesc(configName: 'web1', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/ec2-user/dockerd', remoteDirectorySDF: false, removePrefix: 'target', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+  //          }
          
-        }
-    
-    
+  //      }
+       
         
         stage('Ansible tasks'){
             steps{         
@@ -63,18 +61,14 @@ pipeline{
           - 0.0.0.0:9995:8080 
    
 """
-    // Create inventory
+    // Create inventory file
    writeFile encoding: 'utf8', file: "inventory", text: """
 [dev]
 172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes' # Switch to deploy user and forward keys for remote access
 """
                 
    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
-                      
-                    //Cleanup
-                    //sh "rm playbook.yml -f"
-                    //sh "rm inventory -f"
-                }
+                  }
         }
        
  stage('Docker Build'){
@@ -104,12 +98,9 @@ pipeline{
               ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
             }
         }   
-        
-        
+              
         stage('Artifacts') {
             steps {
-                
-                sh 'echo'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
                 //Cleanup
                 sh "rm playbook.yml -f"
