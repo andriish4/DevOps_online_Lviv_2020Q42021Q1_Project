@@ -28,7 +28,7 @@ pipeline{
         stage('Docker Build'){
             steps{
                 writeFile encoding: 'utf8', file: "Dockerfile", text: """
-                FROM anapsix/alpine-java
+                FROM openjdk:8-jre-alpine3.9
                 COPY target/*.jar /home/webapp.jar
                 CMD ["java","-jar","/home/webapp.jar"]
 """ 
