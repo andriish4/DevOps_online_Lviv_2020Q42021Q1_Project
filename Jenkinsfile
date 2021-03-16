@@ -71,6 +71,7 @@ pipeline{
       pip:
         name: docker-py
         state: present
+    tags: installation    
     - name: Start the container
       docker_container:
         name: web-app
@@ -78,7 +79,7 @@ pipeline{
         state: started
         published_ports:
           - 0.0.0.0:9995:8080 
-   
+    tags: container-run   
 """
     // Create inventory file
    writeFile encoding: 'utf8', file: "inventory", text: """
