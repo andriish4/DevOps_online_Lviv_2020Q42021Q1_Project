@@ -95,18 +95,32 @@ pipeline{
 
 """
                 
-   //ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
-   ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
+       ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
+       //ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
            
             }
         }
-       stage('Docker Deploy'){
+ 
+      stage('QA'){
             steps{
              // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
               ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null           
             }
+        }           
+        
+        
+        stage('Deploy'){
+            steps{
+              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+              //ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null           
+            }
         }   
-              
+           stage('QA Deploy'){
+            steps{
+             // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null           
+            }
+        }            
  //       stage('Artifacts') {
  //           steps {
  //               archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
