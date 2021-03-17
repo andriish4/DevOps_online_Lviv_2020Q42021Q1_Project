@@ -19,19 +19,7 @@ pipeline{
          
         }
         
-   //      stage('Test'){
-   //         steps{
-   //            sh "mvn test"
-   //         }
-   //       }
-  
-    //      stage('Copy artifacts'){
-  //          steps{
-                
-  //             sshPublisher(publishers: [sshPublisherDesc(configName: 'web1', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/ec2-user/dockerd', remoteDirectorySDF: false, removePrefix: 'target', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-  //          }
-         
-  //      }
+
         stage('Docker Build'){
             steps{
                 writeFile encoding: 'utf8', file: "Dockerfile", text: """
@@ -89,50 +77,48 @@ pipeline{
     // Create inventory file
    writeFile encoding: 'utf8', file: "inventory", text: """
 [dev]
-172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes' # Switch to deploy user and forward keys for remote access
+172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes'
 [qa]
 172.31.31.119 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes'
 
 """
                 
        ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml", sudoUser: null
-       //ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
+       ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null
            
             }
         }
  
-      stage('QA'){
-            steps{
-             // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null           
-            }
-        }           
+  //    stage('QA'){
+  //          steps{
+  //           // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+  //            ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null           
+  //          }
+  //      }           
         
         
         stage('Deploy'){
             steps{
               ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', limit: 'dev', playbook: 'playbook.yml',startAtTask: 'Start the container'
-              //ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null           
+              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", startAtTask: 'Start the container'           
             }
         }   
-           stage('QA Deploy'){
-            steps{
-             // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null, startAtTask: 'Start the container'           
-            }
-        }            
- //       stage('Artifacts') {
- //           steps {
- //               archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
+ //          stage('QA Deploy'){
+ //           steps{
+ //            // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
+ //             ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null, startAtTask: 'Start the container'           
+ //           }
+ //       }            
+        stage('Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
                 //Cleanup
- //               sh "rm playbook.yml -f"
- //               sh "rm inventory -f"
+                sh "rm playbook.yml -f"
+                sh "rm inventory -f"
 
-  //                }
-                            
-                      
+                  }
         
-  //      }
+        }
     }
             
        
