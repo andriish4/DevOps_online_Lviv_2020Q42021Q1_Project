@@ -90,6 +90,9 @@ pipeline{
    writeFile encoding: 'utf8', file: "inventory", text: """
 [dev]
 172.31.27.159 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes' # Switch to deploy user and forward keys for remote access
+[qa]
+172.31.31.119 ansible_user=ec2-user
+
 """
                 
    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
