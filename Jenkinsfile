@@ -96,7 +96,9 @@ pipeline{
 """
                 
    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
-                  }
+   ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null
+           
+            }
         }
        stage('Docker Deploy'){
             steps{
