@@ -19,7 +19,6 @@ pipeline{
          
         }
         
-
         stage('Docker Build'){
             steps{
                 writeFile encoding: 'utf8', file: "Dockerfile", text: """
