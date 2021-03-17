@@ -58,7 +58,7 @@ pipeline{
            
       // Create playbook
      writeFile encoding: 'utf8', file: "playbook.yml", text: """---
-- hosts: all
+- hosts: dev
   become: True
   tasks:
     - name: Install python pip
