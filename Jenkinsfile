@@ -118,7 +118,7 @@ pipeline{
            stage('QA Deploy'){
             steps{
              // ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', playbook: 'playbook.yml'
-              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null           
+              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", playbook: "playbook.yml", sudoUser: null, startAtTask: 'Start the container'           
             }
         }            
  //       stage('Artifacts') {
