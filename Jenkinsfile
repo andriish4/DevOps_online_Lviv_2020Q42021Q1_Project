@@ -8,7 +8,7 @@ pipeline{
         stage('Checkout'){
             steps{
                 deleteDir()
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT4_GLOBAL_JENKINS', url: 'https://github.com/andriish4/spring-petclinic.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT4_GLOBAL_JENKINS', url: 'git@github.com:andriish4/DevOps_online_Lviv_2020Q42021Q1_Project.git']]])
             }
         }
         
