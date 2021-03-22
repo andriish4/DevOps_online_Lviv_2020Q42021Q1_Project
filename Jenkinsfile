@@ -82,8 +82,8 @@ pipeline{
 
 """
                 
-       ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml", sudoUser: null
-       ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null
+ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml", sudoUser: null
+ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null
            
             }
         }
