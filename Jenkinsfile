@@ -82,20 +82,14 @@ pipeline{
 
 """
                 
-       ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml", sudoUser: null
-       ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null
+ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml", sudoUser: null
+ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", sudoUser: null
            
             }
         }
  
-   
-        
-        stage('Deploy'){
-            steps{
-              ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: 'inventory', limit: 'dev', playbook: 'playbook.yml',startAtTask: 'Start the container'
-              ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=$BUILD_ID", installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", startAtTask: 'Start the container'           
-            }
-        }   
+           
+
         stage('Artifacts') {
             steps {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, followSymlinks: false
