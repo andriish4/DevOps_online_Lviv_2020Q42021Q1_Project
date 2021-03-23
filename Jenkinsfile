@@ -70,6 +70,7 @@ pipeline{
         name: web-app
         image: "andriyandriy75/webapp:$BUILD_ID"
         state: started
+        auto_remove: yes
         published_ports:
           - 0.0.0.0:9995:8080 
       """
