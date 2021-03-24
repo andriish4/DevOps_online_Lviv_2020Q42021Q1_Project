@@ -88,7 +88,14 @@ ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installat
             }
         }
  
-           
+        stage('Build') {
+                 steps {
+                    ansiblePlaybook credentialsId: 'web1cred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'dev', playbook: "playbook.yml",startAtTask: 'Start the container' 
+                    ansiblePlaybook credentialsId: 'qacred', disableHostKeyChecking: true, installation: 'ansible', inventory: "inventory", limit: 'qa', playbook: "playbook.yml", startAtTask: 'Start the container'
+
+                        }
+
+                       }   
 
         stage('Artifacts') {
             steps {
