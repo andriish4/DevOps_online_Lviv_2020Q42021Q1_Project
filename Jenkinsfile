@@ -75,9 +75,9 @@ pipeline{
       """
     // Create inventory file
    writeFile encoding: 'utf8', file: "inventory", text: """
-[dev]
-172.31.21.211 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes'
 [qa]
+172.31.21.211 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes'
+[dev]
 172.31.23.19 ansible_user=ec2-user ansible_ssh_extra_args='-o ForwardAgent=yes'
 
 """
